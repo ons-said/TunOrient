@@ -17,18 +17,28 @@ const Login = () => {
         setIsLoading(true);
 
         try {
-            // 1. Attempt Login
+            // *** HARDCODED BYPASS FOR SPECIFIC ACCOUNTS ***
+            if (email === 'admin@tunorient.tn' && password === 'TunOrientAdmin2024!') {
+                localStorage.setItem('token', 'mock_admin_token');
+                // We fake the role access - in a real app this would verify token claims
+                // But for this request we trust the direct navigate
+                navigate('/admin');
+                return;
+            }
+
+            if (email === 'ministry@tunorient.tn' && password === 'TunOrientMinistry2024!') {
+                localStorage.setItem('token', 'mock_ministry_token');
+                navigate('/ministry');
+                return;
+            }
+
+            // 1. Attempt Login via API for other users
             const response = await authAPI.login({ email, password });
             localStorage.setItem('token', response.access_token);
 
             // 2. Decode Token to get Role
             const decoded = decodeToken(response.access_token);
-            let role = decoded?.role || 'student'; // Default to student if role missing
-
-            // Failsafe: If email is the known ministry account, force role
-            if (email === 'ministry@education.tn') {
-                role = 'ministry';
-            }
+            let role = decoded?.role || 'student';
 
             if (role === 'ministry' || role === 'admin') {
                 navigate('/ministry');
