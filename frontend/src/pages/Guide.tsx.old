@@ -1,0 +1,87 @@
+import { useState, useEffect } from 'react';
+import { BookOpen, CheckCircle, HelpCircle, ChevronRight } from 'lucide-react';
+
+const Guide = () => {
+    const [isVisible, setIsVisible] = useState(false);
+
+    useEffect(() => {
+        setIsVisible(true);
+    }, []);
+
+    const steps = [
+        { title: "Calculate Your Score", desc: "Use the official formula (FG) based on your Baccalaureate grades." },
+        { title: "Browse Programs", desc: "Filter highly competitive programs compatible with your score." },
+        { title: "Submit Choices", desc: "Rank your preferred programs in the official orientation form." },
+        { title: "Wait for Results", desc: "Results are usually announced via SMS and the official website." },
+    ];
+
+    return (
+        <div className={`min-h-screen bg-slate-50 font-sans transition-all duration-1000 transform ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
+            {/* Header */}
+            <div className="bg-white shadow-sm border-b border-slate-200">
+                <div className="max-w-7xl mx-auto px-4 py-12 sm:px-6 lg:px-8 text-center">
+                    <span className="inline-block p-3 rounded-full bg-blue-100 text-blue-700 mb-4 shadow-sm">
+                        <BookOpen className="h-8 w-8" />
+                    </span>
+                    <h1 className="text-4xl font-bold text-slate-900 font-serif mb-4">Student Orientation Guide</h1>
+                    <p className="text-xl text-slate-600 max-w-2xl mx-auto">Everything you need to know about navigating the university admission process in Tunisia.</p>
+                </div>
+            </div>
+
+            <div className="max-w-4xl mx-auto px-4 py-12 sm:px-6 lg:px-8">
+
+                {/* Timeline Steps */}
+                <div className="space-y-8 relative before:absolute before:inset-0 before:ml-5 before:-translate-x-px md:before:mx-auto md:before:translate-x-0 before:h-full before:w-0.5 before:bg-gradient-to-b before:from-transparent before:via-slate-300 before:to-transparent">
+                    {steps.map((step, idx) => (
+                        <div key={idx} className="relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group is-active">
+
+                            {/* Icon */}
+                            <div className="flex items-center justify-center w-10 h-10 rounded-full border border-white bg-slate-300 group-[.is-active]:bg-blue-600 text-slate-500 group-[.is-active]:text-white shadow shrink-0 md:order-1 md:group-odd:-translate-x-1/2 md:group-even:translate-x-1/2 z-10 transition-colors duration-500">
+                                <span className="font-bold text-sm">{idx + 1}</span>
+                            </div>
+
+                            {/* Card */}
+                            <div className="w-[calc(100%-4rem)] md:w-[calc(50%-2.5rem)] p-6 bg-white border border-slate-200 rounded-xl shadow-sm hover:shadow-md transition-all duration-300">
+                                <h3 className="text-lg font-bold text-slate-900 mb-2">{step.title}</h3>
+                                <p className="text-slate-600 text-sm">{step.desc}</p>
+                            </div>
+                        </div>
+                    ))}
+                </div>
+
+                {/* FAQ Section */}
+                <div className="mt-20">
+                    <h2 className="text-2xl font-bold text-slate-900 mb-8 text-center font-serif">Frequently Asked Questions</h2>
+                    <div className="grid gap-6 md:grid-cols-2">
+                        <div className="bg-white p-6 rounded-xl border border-slate-200 shadow-sm hover:border-blue-300 transition-colors">
+                            <div className="flex items-start">
+                                <HelpCircle className="h-6 w-6 text-blue-600 mr-3 mt-1" />
+                                <div>
+                                    <h4 className="font-semibold text-slate-900">Can I change my choices?</h4>
+                                    <p className="mt-2 text-sm text-slate-600">Yes, but only during the official modification period specified by the ministry.</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div className="bg-white p-6 rounded-xl border border-slate-200 shadow-sm hover:border-blue-300 transition-colors">
+                            <div className="flex items-start">
+                                <HelpCircle className="h-6 w-6 text-blue-600 mr-3 mt-1" />
+                                <div>
+                                    <h4 className="font-semibold text-slate-900">What if I don't get matched?</h4>
+                                    <p className="mt-2 text-sm text-slate-600">You can participate in the "reorientation" session which occurs after the main session.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div className="mt-12 text-center">
+                    <a href="/register" className="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md text-white bg-blue-900 hover:bg-blue-800 transition-all shadow-lg hover:shadow-xl transform hover:-translate-y-1">
+                        Start Application <ChevronRight className="ml-2 h-5 w-5" />
+                    </a>
+                </div>
+            </div>
+        </div>
+    );
+};
+
+export default Guide;
