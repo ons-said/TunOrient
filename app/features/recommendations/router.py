@@ -3,6 +3,7 @@ from sqlalchemy.orm import Session
 from app.features.recommendations.schemas import RecommendationInput
 from app.features.recommendations.service import RecommendationService
 from app.database import get_db
+from app.features.recommendations.model import Recommendation
 
 router = APIRouter(
     prefix="/recommendations",
@@ -32,10 +33,32 @@ async def generate_recommendations(
         if not recommendations:
             raise HTTPException(status_code=404, detail="Student not found")
         
+        # --- Save recommendations to DB ---
+        for rec in recommendations["top_choices"]:
+            db_rec = Recommendation(
+                student_id=student_id,
+                program_id=rec["program_id"],
+                program_name=rec["program_name"],
+                institution=rec["institution"],
+                university=rec["university"],
+                field=rec["field"],
+                total_points=rec["total_points"],
+                total_points_with_bonus=rec["total_points_with_bonus"],
+                last_admitted_score=rec["last_admitted_score"],
+                meets_cutoff=rec["meets_cutoff"],
+                geographic_bonus=rec["geographic_bonus"],
+                requires_selection=rec["requires_selection"],
+                preference_match=rec["preference_match"],
+                category=rec["category"],
+            )
+            db.add(db_rec)
+        db.commit()
+        # --- End save ---
+
         return {
             "success": True,
             "data": recommendations,
-            "message": f"Generated {len(recommendations['top_choices'])} recommendations"
+            "message": f"Generated and saved {len(recommendations['top_choices'])} recommendations"
         }
         
     except Exception as e:
@@ -49,10 +72,63 @@ async def list_recommendations_for_student(
     """
     Get all recommendations for a student (from database)
     """
-    # You can implement storing recommendations in DB later
-    # For now, return empty or placeholder
+    recommendations = db.query(Recommendation).filter(Recommendation.student_id == student_id).all()
+    data = [
+        {
+            "program_id": rec.program_id,
+            "program_name": rec.program_name,
+            "institution": rec.institution,
+            "university": rec.university,
+            "field": rec.field,
+            "total_points": rec.total_points,
+            "total_points_with_bonus": rec.total_points_with_bonus,
+            "last_admitted_score": rec.last_admitted_score,
+            "meets_cutoff": rec.meets_cutoff,
+            "geographic_bonus": rec.geographic_bonus,
+            "requires_selection": rec.requires_selection,
+            "preference_match": rec.preference_match,
+            "category": rec.category,
+        }
+        for rec in recommendations
+    ]
     return {
         "success": True,
-        "data": [],
-        "message": "No stored recommendations found"
+        "data": data,
+        "message": f"Found {len(data)} recommendations for student {student_id}"
     }
+
+@router.get("/{student_id}/{rec_id}")
+async def get_recommendation_by_student_and_id(
+    student_id: int,
+    rec_id: int,
+    db: Session = Depends(get_db)
+):
+    """
+    Get a single recommendation by student ID and recommendation ID
+    """
+    rec = db.query(Recommendation).filter(
+        Recommendation.student_id == student_id,
+        Recommendation.id == rec_id
+    ).first()
+    if not rec:
+        raise HTTPException(status_code=404, detail="Recommendation not found")
+    return {
+        "success": True,
+        "data": {
+            "program_id": rec.program_id,
+            "program_name": rec.program_name,
+            "institution": rec.institution,
+            "university": rec.university,
+            "field": rec.field,
+            "total_points": rec.total_points,
+            "total_points_with_bonus": rec.total_points_with_bonus,
+            "last_admitted_score": rec.last_admitted_score,
+            "meets_cutoff": rec.meets_cutoff,
+            "geographic_bonus": rec.geographic_bonus,
+            "requires_selection": rec.requires_selection,
+            "preference_match": rec.preference_match,
+            "category": rec.category,
+        },
+        "message": f"Recommendation {rec_id} for student {student_id} found"
+    }
+
