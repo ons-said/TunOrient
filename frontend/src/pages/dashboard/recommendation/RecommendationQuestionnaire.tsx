@@ -178,7 +178,23 @@ const RecommendationQuestionnaire = () => {
 
       // Get current user (or use student_id from form)
       const user = await authAPI.getCurrentUser();
-      const studentId = formData.student_id || user.id;
+
+      // Auto-detect student profile
+      let targetStudentId = formData.student_id; // Keep fallback if pre-filled
+      if (!targetStudentId && user.student_profile && user.student_profile.length > 0) {
+        targetStudentId = user.student_profile[0].id;
+      }
+
+      if (!targetStudentId) {
+        // If no profile found, maybe try to use user.id (though risky per discussion, better to alert)
+        // But for now, user might have created it
+        // Let's assume user.id if all else fails, or alert
+        alert("Profil étudiant introuvable. Veuillez créer votre profil d'abord.");
+        setIsLoading(false);
+        return;
+      }
+
+      const studentId = targetStudentId;
 
       // Prepare request data
       const requestData: RecommendationRequest = {
@@ -190,9 +206,13 @@ const RecommendationQuestionnaire = () => {
       };
 
       // Make API call
+      const token = localStorage.getItem('token');
       const response = await fetch(`/api/v1/recommendations/${studentId}`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
         body: JSON.stringify(requestData)
       });
 
@@ -216,7 +236,7 @@ const RecommendationQuestionnaire = () => {
     }
   };
 
-  const isStep1Valid = formData.student_id && formData.bac_type && formData.governorate && formData.grades.MG;
+  const isStep1Valid = formData.bac_type && formData.governorate && formData.grades.MG;
   const isStep2Valid = true; // Preferences are optional
 
   return (
@@ -252,20 +272,7 @@ const RecommendationQuestionnaire = () => {
             </h2>
 
             <div className="space-y-8">
-              {/* Student ID */}
-              <div>
-                <label className="block text-lg font-medium text-slate-800 mb-3">
-                  ID de l'étudiant
-                </label>
-                <input
-                  type="text"
-                  required
-                  placeholder="Entrez votre ID étudiant"
-                  className="w-full max-w-md rounded-lg border-slate-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 text-lg p-3 border"
-                  value={formData.student_id}
-                  onChange={(e) => setFormData({ ...formData, student_id: e.target.value })}
-                />
-              </div>
+              {/* Student ID input removed as it is auto-detected */}
 
               {/* Baccalaureate Type */}
               <div>
@@ -450,8 +457,8 @@ const RecommendationQuestionnaire = () => {
                   <div
                     key={index}
                     className={`border rounded-xl p-5 transition-all hover:shadow-md ${rec.requires_selection
-                        ? 'border-amber-200 bg-amber-50'
-                        : 'border-slate-200 bg-white'
+                      ? 'border-amber-200 bg-amber-50'
+                      : 'border-slate-200 bg-white'
                       }`}
                   >
                     <div className="flex items-start justify-between mb-3">
