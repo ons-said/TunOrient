@@ -304,6 +304,7 @@ const Programs = () => {
                         </Link>
                         <div className="flex items-center space-x-6">
                             <Link to="/" className="text-slate-600 hover:text-blue-900 font-medium">Home</Link>
+                            <Link to="/guide" className="text-slate-600 hover:text-blue-900 font-medium">Guide</Link>
                             <div className="h-6 w-px bg-slate-200"></div>
                             <Link to="/login" className="text-slate-600 hover:text-blue-900 font-medium">Login</Link>
                             <Link to="/register" className="bg-blue-900 text-white px-5 py-2 rounded-md font-medium hover:bg-blue-800 transition-colors">

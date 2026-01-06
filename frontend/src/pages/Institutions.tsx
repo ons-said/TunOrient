@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Building2, MapPin, Search, Loader2 } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import { institutionsAPI } from '../api/institutions';
 import type { Institution } from '../api/institutions';
 
@@ -38,89 +39,119 @@ const Institutions = () => {
 
     return (
         <div className={`min-h-screen bg-slate-50 font-sans transition-opacity duration-700 ${isVisible ? 'opacity-100' : 'opacity-0'}`}>
-            {/* Header */}
-            <div className="bg-white shadow-sm border-b border-slate-200">
-                <div className="max-w-7xl mx-auto px-4 py-8 sm:px-6 lg:px-8">
-                    <h1 className="text-3xl font-bold text-slate-900 font-serif">Academic Institutions</h1>
-                    <p className="mt-2 text-slate-600">Explore the universities and institutes across Tunisia.</p>
-                </div>
-            </div>
-
-            {/* Content */}
-            <div className="max-w-7xl mx-auto px-4 py-8 sm:px-6 lg:px-8">
-                {/* Search */}
-                <div className="relative mb-8 transform transition-all duration-500 translate-y-0 ease-out">
-                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                        <Search className="h-5 w-5 text-slate-400" />
-                    </div>
-                    <input
-                        type="text"
-                        className="block w-full pl-10 pr-3 py-3 border border-slate-300 rounded-lg leading-5 bg-white placeholder-slate-500 focus:outline-none focus:placeholder-slate-400 focus:ring-1 focus:ring-blue-500 focus:border-blue-500 sm:text-sm shadow-sm transition-shadow hover:shadow-md"
-                        placeholder="Search by name, university, or region..."
-                        value={searchTerm}
-                        onChange={(e) => setSearchTerm(e.target.value)}
-                    />
-                </div>
-
-                {/* Error State */}
-                {error && (
-                    <div className="text-center py-12 text-red-600">
-                        <p>{error}</p>
-                    </div>
-                )}
-
-                {/* Loading State */}
-                {isLoading ? (
-                    <div className="flex justify-center items-center py-20">
-                        <Loader2 className="h-8 w-8 text-blue-900 animate-spin" />
-                    </div>
-                ) : (
-                    /* Grid */
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                        {filtered.map((inst, index) => (
-                            <div
-                                key={inst.id}
-                                className="bg-white rounded-xl shadow-sm border border-slate-200 p-6 hover:shadow-lg hover:-translate-y-1 transition-all duration-300 group cursor-pointer"
-                                style={{ animationDelay: `${index * 50}ms` }}
-                            >
-                                <div className="flex items-start justify-between mb-4">
-                                    <div className="p-3 bg-blue-50 rounded-lg group-hover:bg-blue-100 transition-colors">
-                                        <Building2 className="h-6 w-6 text-blue-700" />
-                                    </div>
-                                    <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-slate-100 text-slate-800">
-                                        Institution
-                                    </span>
-                                </div>
-                                <h3 className="text-lg font-bold text-slate-900 mb-2 group-hover:text-blue-900 transition-colors line-clamp-2 min-h-[3.5rem]">
-                                    {inst.name}
-                                </h3>
-
-                                <div className="flex flex-col space-y-1 text-slate-500 text-sm">
-                                    {/* University Name */}
-                                    {inst.university?.name && (
-                                        <div className="text-sm font-medium text-slate-600">
-                                            {inst.university.name}
-                                        </div>
-                                    )}
-
-                                    {/* Region */}
-                                    {inst.university?.region && (
-                                        <div className="flex items-center text-xs text-slate-400">
-                                            <MapPin className="h-3 w-3 mr-1 flex-shrink-0" />
-                                            {inst.university.region}
-                                        </div>
-                                    )}
-                                </div>
+            {/* Navbar */}
+            <nav className="fixed w-full z-50 bg-white border-b border-slate-200">
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                    <div className="flex justify-between h-20 items-center">
+                        <Link to="/" className="flex items-center space-x-3 cursor-pointer group">
+                            {/* We can reproduce the logo here or import it if it was a component, but copying is safer given imports */}
+                            <div className="p-2 bg-blue-900 rounded-lg shadow-sm">
+                                {/* Use Building2 as logo here if GranuationCap not available or imported */}
+                                <Building2 className="h-6 w-6 text-white" />
                             </div>
-                        ))}
+                            <span className="text-2xl font-bold text-slate-900 tracking-tight font-serif">
+                                TunOrient
+                            </span>
+                        </Link>
+                        <div className="flex items-center space-x-6">
+                            <Link to="/" className="text-slate-600 hover:text-blue-900 font-medium">Home</Link>
+                            <Link to="/guide" className="text-slate-600 hover:text-blue-900 font-medium">Guide</Link>
+                            <div className="h-6 w-px bg-slate-200"></div>
+                            <Link to="/login" className="text-slate-600 hover:text-blue-900 font-medium">Login</Link>
+                            <Link to="/register" className="bg-blue-900 text-white px-5 py-2 rounded-md font-medium hover:bg-blue-800 transition-colors">
+                                Get Started
+                            </Link>
+                        </div>
                     </div>
-                )}
+                </div>
+            </nav>
 
-                {!isLoading && !error && filtered.length === 0 && (
-                    <div className="text-center py-12">
-                        <p className="text-slate-500">No institutions found matching your search.</p>
+            <div className="pt-28">
+
+                {/* Header */}
+                <div className="bg-white shadow-sm border-b border-slate-200">
+                    <div className="max-w-7xl mx-auto px-4 py-8 sm:px-6 lg:px-8">
+                        <h1 className="text-3xl font-bold text-slate-900 font-serif">Academic Institutions</h1>
+                        <p className="mt-2 text-slate-600">Explore the universities and institutes across Tunisia.</p>
                     </div>
-                )}
+                </div>
+
+                {/* Content */}
+                <div className="max-w-7xl mx-auto px-4 py-8 sm:px-6 lg:px-8">
+                    {/* Search */}
+                    <div className="relative mb-8 transform transition-all duration-500 translate-y-0 ease-out">
+                        <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                            <Search className="h-5 w-5 text-slate-400" />
+                        </div>
+                        <input
+                            type="text"
+                            className="block w-full pl-10 pr-3 py-3 border border-slate-300 rounded-lg leading-5 bg-white placeholder-slate-500 focus:outline-none focus:placeholder-slate-400 focus:ring-1 focus:ring-blue-500 focus:border-blue-500 sm:text-sm shadow-sm transition-shadow hover:shadow-md"
+                            placeholder="Search by name, university, or region..."
+                            value={searchTerm}
+                            onChange={(e) => setSearchTerm(e.target.value)}
+                        />
+                    </div>
+
+                    {/* Error State */}
+                    {error && (
+                        <div className="text-center py-12 text-red-600">
+                            <p>{error}</p>
+                        </div>
+                    )}
+
+                    {/* Loading State */}
+                    {isLoading ? (
+                        <div className="flex justify-center items-center py-20">
+                            <Loader2 className="h-8 w-8 text-blue-900 animate-spin" />
+                        </div>
+                    ) : (
+                        /* Grid */
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                            {filtered.map((inst, index) => (
+                                <div
+                                    key={inst.id}
+                                    className="bg-white rounded-xl shadow-sm border border-slate-200 p-6 hover:shadow-lg hover:-translate-y-1 transition-all duration-300 group cursor-pointer"
+                                    style={{ animationDelay: `${index * 50}ms` }}
+                                >
+                                    <div className="flex items-start justify-between mb-4">
+                                        <div className="p-3 bg-blue-50 rounded-lg group-hover:bg-blue-100 transition-colors">
+                                            <Building2 className="h-6 w-6 text-blue-700" />
+                                        </div>
+                                        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-slate-100 text-slate-800">
+                                            Institution
+                                        </span>
+                                    </div>
+                                    <h3 className="text-lg font-bold text-slate-900 mb-2 group-hover:text-blue-900 transition-colors line-clamp-2 min-h-[3.5rem]">
+                                        {inst.name}
+                                    </h3>
+
+                                    <div className="flex flex-col space-y-1 text-slate-500 text-sm">
+                                        {/* University Name */}
+                                        {inst.university?.name && (
+                                            <div className="text-sm font-medium text-slate-600">
+                                                {inst.university.name}
+                                            </div>
+                                        )}
+
+                                        {/* Region */}
+                                        {inst.university?.region && (
+                                            <div className="flex items-center text-xs text-slate-400">
+                                                <MapPin className="h-3 w-3 mr-1 flex-shrink-0" />
+                                                {inst.university.region}
+                                            </div>
+                                        )}
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    )}
+
+                    {!isLoading && !error && filtered.length === 0 && (
+                        <div className="text-center py-12">
+                            <p className="text-slate-500">No institutions found matching your search.</p>
+                        </div>
+                    )}
+                </div>
             </div>
         </div>
     );
