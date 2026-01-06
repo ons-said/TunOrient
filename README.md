@@ -1,99 +1,117 @@
-# TunOrient
+# TunOrient - University Orientation Platform
 
-TunOrient is a FastAPI application that provides a simple and efficient way to manage orientations with basic JWT authentication and a SQLite database. This project is structured to facilitate easy development and maintenance.
+TunOrient is a modern web application designed to guide Tunisian students through their university orientation process. It leverages a powerful algorithm to calculate the "Score Global" (FG) and provide personalized program recommendations based on academic performance and geographic preferences.
 
-## Features
+## Application Architecture
 
-- FastAPI framework for building APIs
-- SQLAlchemy for database interactions
-- SQLite as the database backend
-- JWT authentication for secure access
-- Swagger documentation for easy API exploration
+The project consists of two main parts:
+- **Backend**: A FastAPI application (Python) handling data management, authentication, and the recommendation algorithm.
+- **Frontend**: A React application (TypeScript/Vite) providing an interactive user interface for students, administrators, and ministry officials.
 
-## Project Structure
+## Application Flow
 
-```
-TunOrient
-├── app
-│   ├── main.py                # Entry point of the FastAPI application
-│   ├── core
-│   │   ├── config.py          # Configuration settings
-│   │   └── security.py        # Security-related functions
-│   ├── db
-│   │   ├── base.py            # Base class for SQLAlchemy models
-│   │   └── session.py         # Database session management
-│   ├── models
-│   │   └── orientation.py      # SQLAlchemy model for Orientation
-│   ├── schemas
-│   │   └── orientation.py      # Pydantic schemas for Orientation
-│   ├── repositories
-│   │   └── orientation_repository.py  # CRUD operations for Orientation
-│   ├── api
-│   │   ├── deps.py            # Dependency functions for routes
-│   │   └── v1
-│   │       ├── api.py         # API router setup
-│   │       └── endpoints
-│   │           ├── orientations.py  # Orientation-related API endpoints
-│   │           └── auth.py     # Authentication API endpoints
-│   ├── services
-│   │   └── auth_service.py     # Authentication logic
-│   └── utils
-│       └── jwt.py              # JWT utility functions
-├── alembic
-│   └── env.py                  # Alembic environment configuration
-├── tests
-│   └── test_orientation.py      # Unit tests for Orientation
-├── requirements.txt             # Project dependencies
-├── alembic.ini                 # Alembic configuration file
-├── .env                        # Environment variables
-├── Dockerfile                  # Docker image instructions
-└── README.md                   # Project documentation
-```
+### 1. User Journey (Student)
+1.  **Registration**: New users sign up with their email and role (Student).
+2.  **Authentication**: Users login to receive a secure access token.
+3.  **Profile Creation**: Students create their profile by entering their Baccalaureate Section (e.g., Mathematics, Sciences), Average Grade, and Governorate.
+4.  **Recommendation**:
+    *   Students navigate to the "Get Advice" section.
+    *   They input detailed Baccalaureate grades (subjects vary by section).
+    *   They confirm their preferences (fields of study, regions).
+    *   The system calculates the specific Score (FG) for each eligible program.
+    *   The system applies the "Tanfil" (geographic bonus) where applicable.
+    *   Results are displayed, categorized as "Safe", "Target", or "Dream" choices based on previous years' cutoff scores.
 
-## Installation
+### 2. Administrative Journey
+-   **Admins**: Have full access to manage users, circulars, and system configurations.
+-   **Ministry**: Can manage institutions, programs, and view aggregate student data.
 
-1. Clone the repository:
-   ```
-   git clone <repository-url>
-   cd TunOrient
-   ```
+## API Documentation
 
-2. Create a virtual environment:
-   ```
-   python -m venv venv
-   source venv/bin/activate  # On Windows use `venv\Scripts\activate`
-   ```
+Below is a detailed list of all available API endpoints organized by feature.
 
-3. Install the dependencies:
-   ```
-   pip install -r requirements.txt
-   ```
+### Authentication (`/auth`)
+| Method | Endpoint | Description | Auth Required |
+| :--- | :--- | :--- | :--- |
+| `POST` | `/auth/register` | Register a new user | No |
+| `POST` | `/auth/login` | Login and retrieve access token | No |
 
-4. Set up the database:
-   - Configure your database settings in the `.env` file.
-   - Run migrations using Alembic:
-     ```
-     alembic upgrade head
-     ```
+### Students (`/students`)
+| Method | Endpoint | Description | Auth Required |
+| :--- | :--- | :--- | :--- |
+| `POST` | `/students/` | Create a student profile | User (Student) |
+| `GET` | `/students/{student_id}` | Get student profile details | User |
+| `PUT` | `/students/{student_id}` | Update student profile | User (Self) or Admin |
+| `DELETE` | `/students/{student_id}` | Delete student profile | User (Self) or Admin |
+| `GET` | `/students/` | List all students | Admin or Ministry |
+| `GET` | `/students/user-list` | List all student user accounts | Ministry |
 
-## Running the Application
+### Recommendations (`/recommendations`)
+| Method | Endpoint | Description | Auth Required |
+| :--- | :--- | :--- | :--- |
+| `POST` | `/recommendations/{student_id}` | Generate diverse recommendations based on grades and preferences | User |
+| `GET` | `/recommendations/student/{student_id}` | Retrieve recommendation history for a student | User |
 
-To start the FastAPI application, run:
-```
-uvicorn app.main:app --reload
-```
+### Programs (`/programs`)
+| Method | Endpoint | Description | Auth Required |
+| :--- | :--- | :--- | :--- |
+| `GET` | `/programs/` | List/Filter university programs | No |
+| `GET` | `/programs/{id}` | Get specific program details | No |
+| `POST` | `/programs/` | Create a new program | Admin or Ministry |
+| `PUT` | `/programs/{id}` | Update an existing program | Admin or Ministry |
+| `POST` | `/programs/bulk` | Bulk create programs | Admin or Ministry |
 
-You can access the API documentation at `http://127.0.0.1:8000/docs`.
+### Institutions (`/institutions`)
+| Method | Endpoint | Description | Auth Required |
+| :--- | :--- | :--- | :--- |
+| `GET` | `/institutions/` | List all institutions | No |
+| `GET` | `/institutions/{id}` | Get institution details | No |
+| `POST` | `/institutions/` | Create a new institution | Admin or Ministry |
+| `PUT` | `/institutions/{id}` | Update an institution | Admin or Ministry |
+| `POST` | `/institutions/bulk` | Bulk create institutions | Admin or Ministry |
 
-## Usage
+### Universities (`/universities`)
+| Method | Endpoint | Description | Auth Required |
+| :--- | :--- | :--- | :--- |
+| `GET` | `/universities/` | List all universities | No |
+| `POST` | `/universities/` | Create a new university | Admin or Ministry |
 
-- Use the `/api/v1/orientations` endpoints to manage orientations.
-- Use the `/api/v1/auth` endpoints for authentication.
+### Circulars (`/circulars`)
+| Method | Endpoint | Description | Auth Required |
+| :--- | :--- | :--- | :--- |
+| `GET` | `/circulars/` | List all orientation circulars | User |
+| `POST` | `/circulars/` | Publish a new circular | Admin |
+| `GET` | `/circulars/{id}` | Download/View specific circular content | User |
 
-## Contributing
+### Administration (`/admin`)
+| Method | Endpoint | Description | Auth Required |
+| :--- | :--- | :--- | :--- |
+| `GET` | `/admin/stats` | Get system statistics (users, programs, etc.) | Admin |
+| `GET` | `/admin/users` | List all system users | Admin |
+| `PUT` | `/admin/users/{user_id}/role` | Update a user's role | Admin |
 
-Contributions are welcome! Please open an issue or submit a pull request for any improvements or bug fixes.
+## Setup & Running
 
-## License
+1.  **Backend**:
+    ```bash
+    # Install dependencies
+    pip install -r requirements.txt
+    
+    # Run the server
+    uvicorn app.main:app --reload
+    ```
+    The API will be available at `http://localhost:8000`.
 
-This project is licensed under the MIT License. See the LICENSE file for details.
+2.  **Frontend**:
+    ```bash
+    cd frontend
+    npm install
+    npm run dev
+    ```
+    The application will be available at `http://localhost:5173`.
+
+## Key Features
+-   **FG Algorithm**: Exact implementation of the Ministry of Higher Education's formula for all Baccalaureate sections.
+-   **Tanfil Bonus**: Integration of the +7% bonus for geographic proximity.
+-   **Secure**: JWT-based authentication and role-based access control.
+-   **Responsive**: Modern, mobile-friendly interface.
