@@ -1,13 +1,14 @@
 from pydantic import BaseModel, ValidationError, model_validator
-from typing import Optional
+from typing import Dict, List, Optional
 from datetime import datetime
 
 class StudentCreate(BaseModel):
     academic_level: str
-    bac_section: Optional[str]
+    bac_section: Optional[str] = None
     bac_average: Optional[float]
     bac_year: Optional[int]
     governorate: Optional[str]
+    bac_grades: Optional[Dict[str, float]] = None
 
     @model_validator(mode="after")
     def check_fields_by_academic_level(self):
@@ -49,3 +50,9 @@ class StudentRead(BaseModel):
     class Config:
         orm_mode = True
 
+class RecommendationInput(BaseModel):
+    bac_type: str
+    bac_grades: Dict[str, float]
+    governorate: str
+    preferences: Optional[List[str]] = None
+    min_choices: int = 6

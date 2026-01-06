@@ -1,50 +1,58 @@
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
-from typing import List
-from app.features.recommendations.schemas import RecommendationQuestionnaire
-from app.database import get_db
-from app.features.recommendations.model import Recommendation
+from app.features.recommendations.schemas import RecommendationInput
 from app.features.recommendations.service import RecommendationService
-from app.features.recommendations.schemas import RecommendationRead, RecommendationUpdate
-from app.core.jwt import get_current_user
+from app.database import get_db
 
-router = APIRouter(prefix="/recommendations", tags=["recommendations"])
+router = APIRouter(
+    prefix="/recommendations",
+    tags=["recommendations"]
+)
 
-@router.post("/{student_id}", response_model=List[RecommendationRead])
-def generate_recommendations(
+@router.post("/{student_id}")
+async def generate_recommendations(
     student_id: int,
-    questionnaire: RecommendationQuestionnaire,
-    db: Session = Depends(get_db),
-    current_user=Depends(get_current_user)
+    recommendation_input: RecommendationInput,
+    db: Session = Depends(get_db)
 ):
-    svc = RecommendationService(db)
+    """
+    Generate university program recommendations for a student based on Tunisian orientation system
+    """
     try:
-        results = svc.generate_for_student(student_id, questionnaire=questionnaire)
-    except ValueError:
-        raise HTTPException(status_code=404, detail="Student not found")
-    return results
+        recommendations = RecommendationService.generate_recommendations(
+            db=db,
+            student_id=student_id,
+            bac_type=recommendation_input.bac_type,
+            grades=recommendation_input.bac_grades,
+            governorate=recommendation_input.governorate,
+            preferences=recommendation_input.preferences,
+            min_choices=recommendation_input.min_choices
+        )
+        
+        if not recommendations:
+            raise HTTPException(status_code=404, detail="Student not found")
+        
+        return {
+            "success": True,
+            "data": recommendations,
+            "message": f"Generated {len(recommendations['top_choices'])} recommendations"
+        }
+        
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
 
-@router.get("/student/{student_id}", response_model=List[RecommendationRead])
-def list_recommendations_for_student(
+@router.get("/student/{student_id}")
+async def list_recommendations_for_student(
     student_id: int,
-    db: Session = Depends(get_db),
-    current_user=Depends(get_current_user)
+    db: Session = Depends(get_db)
 ):
     """
-    List all recommendations for a student.
+    Get all recommendations for a student (from database)
     """
-    svc = RecommendationService(db)
-    return svc.list_recommendations_for_student(student_id)
-
-@router.put("/{recommendation_id}", response_model=RecommendationRead)
-def update_recommendation(
-    recommendation_id: int,
-    payload: RecommendationUpdate,
-    db: Session = Depends(get_db),
-    current_user=Depends(get_current_user)
-):
-    svc = RecommendationService(db)
-    updated_rec = svc.update_recommendation(recommendation_id, payload)
-    if not updated_rec:
-        raise HTTPException(status_code=404, detail="Recommendation not found")
-    return updated_rec
+    # You can implement storing recommendations in DB later
+    # For now, return empty or placeholder
+    return {
+        "success": True,
+        "data": [],
+        "message": "No stored recommendations found"
+    }

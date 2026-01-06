@@ -5,7 +5,7 @@ from datetime import datetime
 class AdminUserCreate(BaseModel):
     email: EmailStr
     password: str
-    role: str = "student" # student, ministry, admin
+    role: str = "admin" # student, ministry, admin
 
 class AdminUserUpdate(BaseModel):
     email: Optional[EmailStr] = None

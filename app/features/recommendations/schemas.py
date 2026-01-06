@@ -10,6 +10,13 @@ class RecommendationCreate(BaseModel):
     likelihood: Optional[str]
     decision: Optional[str]
 
+class RecommendationInput(BaseModel):
+    bac_type: str
+    bac_grades: Dict[str, float]
+    governorate: str
+    preferences: List[str]
+    min_choices: int = 6
+
 class RecommendationRead(BaseModel):
     id: int
     student_id: int
