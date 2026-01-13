@@ -19,6 +19,11 @@ const DashboardHome = () => {
                     <h3 className="text-lg font-semibold text-slate-800 mb-2">My Wishlist</h3>
                     <p className="text-slate-600">Get advice on your university choices.</p>
                 </Link>
+
+                <Link to="/dashboard/reorientation-programs" className="bg-white p-6 rounded-xl shadow-sm border border-slate-200 block hover:shadow-md transition-shadow">
+                    <h3 className="text-lg font-semibold text-slate-800 mb-2">Programs that allow reorientation</h3>
+                    <p className="text-slate-600">Browse programs eligible for reorientation.</p>
+                </Link>
             </div>
         </div>
     );

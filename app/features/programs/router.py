@@ -11,6 +11,13 @@ from app.core.jwt import get_current_user, require_role
 router = APIRouter(prefix="/programs", tags=["programs"])
 
 
+
+@router.get("/reorientation/list", response_model=List[schemas.ProgramRead])
+def list_reorientation_programs(db: Session = Depends(get_db)):
+    svc = ProgramService(db)
+    return svc.list_programs(reorientation_allowed=True)
+
+
 @router.get("/", response_model=List[schemas.ProgramRead])
 def list_programs(
     institution_id: int = None,
@@ -19,7 +26,13 @@ def list_programs(
     db: Session = Depends(get_db)
 ):
     svc = ProgramService(db)
-    return svc.list_programs(institution_id=institution_id, field=field, region=region)
+    return svc.list_programs(
+        institution_id=institution_id, 
+        field=field, 
+        region=region
+    )
+
+
 
 
 @router.get("/{id}", response_model=schemas.ProgramRead)

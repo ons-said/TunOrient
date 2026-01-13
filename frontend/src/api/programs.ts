@@ -18,6 +18,7 @@ export interface Program {
     formula?: string;
     conditions?: string;
     requiresTest?: boolean;
+    reorientation_allowed?: boolean;
     scores: ProgramScore[];
 }
 
@@ -45,11 +46,47 @@ export const programsAPI = {
                 }] : [],
                 // Pass through other fields as needed or mock them
                 requiresTest: false, // Default
+                reorientation_allowed: item.reorientation_allowed,
                 formula: item.score_formula || "FG",
                 conditions: item.additional_conditions || "-"
             }));
         } catch (error) {
             console.error("Failed to fetch programs", error);
+            throw error;
+        }
+    },
+
+    getReorientationPrograms: async (): Promise<Program[]> => {
+        try {
+            const response = await api.get('/programs/reorientation/list');
+            const data = response.data;
+            console.log("DEBUG: getReorientationPrograms response:", data);
+
+            if (!Array.isArray(data)) {
+                console.error("DEBUG: response data is not an array:", data);
+                return [];
+            }
+
+            return data.map((item: any) => ({
+                id: item.id,
+                code: String(item.id),
+                name: item.name,
+                institution: item.institution?.name || "Unknown Institution",
+                university: item.institution?.university?.name || "Unknown University",
+                city: item.institution?.university?.region || "Tunis",
+                domain: item.field || "General",
+                type: item.degree || "Licence",
+                scores: item.last_admitted_score ? [{
+                    section: item.bac_section || "General",
+                    score2024: Number(item.last_admitted_score)
+                }] : [],
+                requiresTest: false,
+                reorientation_allowed: item.reorientation_allowed,
+                formula: item.score_formula || "FG",
+                conditions: item.additional_conditions || "-"
+            }));
+        } catch (error) {
+            console.error("Failed to fetch reorientation programs", error);
             throw error;
         }
     },

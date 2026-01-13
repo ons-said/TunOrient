@@ -1,0 +1,44 @@
+Connecting to C:\Users\Administrateur\TunOrient\tunorient.db
+Checking programs table columns...
+(0, 'id', 'INTEGER', 1, None, 1)
+(1, 'name', 'VARCHAR', 1, None, 0)
+(2, 'degree', 'VARCHAR', 0, None, 0)
+(3, 'field', 'VARCHAR', 0, None, 0)
+(4, 'capacity', 'INTEGER', 0, None, 0)
+(5, 'institution_id', 'INTEGER', 1, None, 0)
+(6, 'reorientation_allowed', 'BOOLEAN', 1, None, 0)
+(7, 'reorientation_mode', 'VARCHAR', 0, None, 0)
+(8, 'created_at', 'DATETIME', 0, None, 0)
+(9, 'bac_section', 'VARCHAR', 0, None, 0)
+(10, 'min_average', 'FLOAT', 0, None, 0)
+(11, 'score_formula', 'TEXT', 0, None, 0)
+(12, 'required_subjects', 'TEXT', 0, None, 0)
+(13, 'additional_conditions', 'TEXT', 0, None, 0)
+(14, 'academic_year', 'VARCHAR', 0, None, 0)
+(15, 'last_admitted_score', 'DECIMAL(4, 2)', 0, None, 0)
+(16, 'notes', 'TEXT', 0, None, 0)
+
+Checking programs count with reorientation_allowed...
+Found 33 programs matching filter.
+ProgID: 1, Name: Bachelor of Science in Business Administration, InstID: 1, InstName: Tunis Business School
+ProgID: 2, Name: Licence en Sciences et Techniques des Activités Physiques et Sportives, InstID: 1, InstName: Tunis Business School
+ProgID: 3, Name: Licence en Activités Physiques Adaptées et Santé, InstID: 8, InstName: Institut Supérieur d’Informatique de Tunis
+ProgID: 4, Name: Licence en Tourisme, InstID: 4, InstName: Faculté des Lettres, des Arts et des Humanités de La Manouba
+ProgID: 5, Name: Licence en Gestion, InstID: 7, InstName: Institut Supérieur de Gestion de Tunis
+ProgID: 6, Name: Licence en Informatique, InstID: 8, InstName: Institut Supérieur d’Informatique de Tunis
+ProgID: 7, Name: Licence en Génie Informatique, InstID: 9, InstName: Institut Supérieur des Études Technologiques de Sousse
+ProgID: 8, Name: Licence en Arts Plastiques, InstID: 12, InstName: Institut Supérieur des Beaux-Arts de Sousse
+ProgID: 9, Name: Licence en Marketing, InstID: 7, InstName: Institut Supérieur de Gestion de Tunis
+ProgID: 10, Name: Licence en Comptabilité, InstID: 7, InstName: Institut Supérieur de Gestion de Tunis
+
+Checking a sample program to see the value:
+(1, 'Bachelor of Science in Business Administration', 1)
+(2, 'Licence en Sciences et Techniques des Activités Physiques et Sportives', 1)
+(3, 'Licence en Activités Physiques Adaptées et Santé', 1)
+(4, 'Licence en Tourisme', 1)
+(5, 'Licence en Gestion', 1)
+(6, 'Licence en Informatique', 1)
+(7, 'Licence en Génie Informatique', 1)
+(8, 'Licence en Arts Plastiques', 1)
+(9, 'Licence en Marketing', 1)
+(10, 'Licence en Comptabilité', 1)

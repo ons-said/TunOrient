@@ -12,6 +12,7 @@ import Circulars from './pages/dashboard/Circulars';
 import RecommendationIntro from './pages/dashboard/recommendation/RecommendationIntro';
 import RecommendationQuestionnaire from './pages/dashboard/recommendation/RecommendationQuestionnaire';
 import RecommendationResults from './pages/dashboard/recommendation/RecommendationResults';
+import ReorientationPrograms from './pages/dashboard/ReorientationPrograms';
 
 import MinistryLayout from './layouts/MinistryLayout';
 import MinistryDashboard from './pages/ministry/MinistryDashboard';
@@ -42,6 +43,7 @@ function App() {
           <Route path="recommendation" element={<RecommendationIntro />} />
           <Route path="recommendation/quiz" element={<RecommendationQuestionnaire />} />
           <Route path="recommendation/results" element={<RecommendationResults />} />
+          <Route path="reorientation-programs" element={<ReorientationPrograms />} />
         </Route>
 
         {/* Ministry/Admin Routes */}

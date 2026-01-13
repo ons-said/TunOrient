@@ -47,7 +47,8 @@ class ProgramService:
         self,
         institution_id: int = None,
         field: str = None,
-        region: str = None
+        region: str = None,
+        reorientation_allowed: bool = None
     ) -> List[Program]:
         query = self.db.query(Program)
         if institution_id is not None:
@@ -55,7 +56,12 @@ class ProgramService:
         if field is not None:
             query = query.filter(Program.field == field)
         if region is not None:
-            query = query.filter(Program.region == region)  # Make sure Program has a 'region' attribute
+            query = query.filter(Program.region == region)
+        if reorientation_allowed is not None:
+            if reorientation_allowed:
+                query = query.filter(Program.reorientation_allowed.is_(True))
+            else:
+                query = query.filter(Program.reorientation_allowed.is_(False))
         return query.all()
 
     def update_program(self, program_id: int, payload: ProgramCreate) -> Optional[Program]:

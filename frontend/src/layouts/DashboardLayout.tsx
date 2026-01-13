@@ -31,6 +31,7 @@ const DashboardLayout = () => {
         { path: '/dashboard', label: 'Overview', icon: LayoutDashboard },
         { path: '/dashboard/circulars', label: 'Circulars', icon: FileText },
         { path: '/dashboard/recommendation', label: 'Get Advice', icon: Compass },
+        { path: '/dashboard/reorientation-programs', label: 'Reorientation', icon: BookOpen },
         { path: '/programs', label: 'Programs Catalog', icon: BookOpen }, // Link to external part
     ];
 
