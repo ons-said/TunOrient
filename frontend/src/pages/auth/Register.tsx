@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { authAPI } from '../../api/auth';
+import { studentsAPI } from '../../api/students'; // Make sure this exists
 import { useNavigate } from 'react-router-dom';
 import {
     GraduationCap,
@@ -24,29 +25,20 @@ const Register = () => {
         email: '',
         password: '',
         confirmPassword: '',
-        // Student specific fields
         academicLevel: '',
         bacSection: '',
         bacAverage: '',
         bacYear: '',
         governorate: '',
-        // Ministry/Admin specific
-        department: '', // hypothetical field for ministry
-        adminCode: ''   // hypothetical field for admin
+        department: '',
+        adminCode: ''
     });
 
     const [showSection, setShowSection] = useState(false);
     const [showAverage, setShowAverage] = useState(false);
 
-    // Update visibility based on academic level logic
     useEffect(() => {
         const level = formData.academicLevel;
-
-        // Logic from user request:
-        // 1ère & 2ème: No section, No average
-        // 3ème: Section OK, No average
-        // 4ème & Étudiant: All OK
-
         if (['1ère année secondaire', '2ème année secondaire'].includes(level)) {
             setShowSection(false);
             setShowAverage(false);
@@ -57,7 +49,6 @@ const Register = () => {
             setShowSection(true);
             setShowAverage(true);
         } else {
-            // Default hidden if no level selected
             setShowSection(false);
             setShowAverage(false);
         }
@@ -80,18 +71,22 @@ const Register = () => {
         setIsLoading(true);
 
         try {
+            // 1. Register user
             await authAPI.register({
                 email: formData.email,
                 password: formData.password,
-                role: role,
+                role: role
+            });
+
+            // 2. Create student profile
+            await studentsAPI.createProfile({
                 academic_level: formData.academicLevel,
-                bac_section: formData.bacSection,
-                bac_average: formData.bacAverage ? parseFloat(formData.bacAverage) : undefined,
-                bac_year: formData.bacYear ? parseInt(formData.bacYear) : undefined,
+                bac_type: formData.bacSection,
+                bac_average: formData.bacAverage ? parseFloat(formData.bacAverage) : 0,
+                bac_year: formData.bacYear ? parseInt(formData.bacYear) : 0,
                 governorate: formData.governorate
             });
 
-            // Redirect or show success
             navigate('/login');
         } catch (err: any) {
             console.error(err);
@@ -130,10 +125,7 @@ const Register = () => {
                         </div>
                     )}
 
-                    {/* Role selector removed - defaults to Student */}
-
                     <form className="space-y-6" onSubmit={handleSubmit}>
-
                         {/* Common Fields */}
                         <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
                             <div className="col-span-2">

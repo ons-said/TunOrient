@@ -1,11 +1,15 @@
 import api from './axios';
 
-export interface RecommendationQuestionnaire {
-    formule_globale: number;
-    interests: string[];
-    preferred_fields: string[];
-    preferred_regions: string[];
-    study_style: string;
+export interface BacGrades {
+    [key: string]: number;
+}
+
+export interface RecommendationRequest {
+    bac_type: string;
+    bac_grades: BacGrades;
+    governorate: string;
+    preferences: string[];
+    min_choices: number;
 }
 
 // Interface matching Backend ProgramRead schema
@@ -35,15 +39,13 @@ export interface Recommendation {
 }
 
 export const recommendationsAPI = {
-    generate: async (studentId: number, data: RecommendationQuestionnaire): Promise<Recommendation[]> => {
+    generate: async (studentId: number, data: RecommendationRequest): Promise<Recommendation[]> => {
         const response = await api.post(`/recommendations/${studentId}`, data);
-        // If backend returns recommendations in response.data.data.top_choices
-        return response.data.data.top_choices; // or adjust to the correct array path
+        return response.data.data.top_choices; // Adjust if backend changes
     },
 
     listForStudent: async (studentId: number): Promise<Recommendation[]> => {
         const response = await api.get(`/recommendations/student/${studentId}`);
-        // If backend returns recommendations in response.data.data
         return response.data.data;
     }
 };
