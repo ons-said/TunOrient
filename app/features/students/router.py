@@ -19,7 +19,8 @@ def create(payload: schemas.StudentCreate, db: Session = Depends(get_db), curren
     return svc.create_student(payload, user_id=current_user.id)
 
 
-@router.get("/{student_id}", response_model=schemas.StudentRead)
+@router.get("/{student_id}", response_model=schemas.StudentRead,
+            dependencies=[Depends(require_role("admin", "ministry"))])
 def read(student_id: int, db: Session = Depends(get_db)):
     svc = StudentService(db)
     obj = svc.get_student(student_id)

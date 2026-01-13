@@ -36,12 +36,14 @@ export interface Recommendation {
 
 export const recommendationsAPI = {
     generate: async (studentId: number, data: RecommendationQuestionnaire): Promise<Recommendation[]> => {
-        const response = await api.post<Recommendation[]>(`/recommendations/${studentId}`, data);
-        return response.data;
+        const response = await api.post(`/recommendations/${studentId}`, data);
+        // If backend returns recommendations in response.data.data.top_choices
+        return response.data.data.top_choices; // or adjust to the correct array path
     },
 
     listForStudent: async (studentId: number): Promise<Recommendation[]> => {
-        const response = await api.get<Recommendation[]>(`/recommendations/student/${studentId}`);
-        return response.data;
+        const response = await api.get(`/recommendations/student/${studentId}`);
+        // If backend returns recommendations in response.data.data
+        return response.data.data;
     }
 };

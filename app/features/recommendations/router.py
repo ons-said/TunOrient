@@ -4,7 +4,8 @@ from app.features.recommendations.schemas import RecommendationInput
 from app.features.recommendations.service import RecommendationService
 from app.database import get_db
 from app.features.recommendations.model import Recommendation
-
+from app.core.jwt import get_current_user
+from app.features.auth.model import User
 router = APIRouter(
     prefix="/recommendations",
     tags=["recommendations"]
@@ -14,7 +15,8 @@ router = APIRouter(
 async def generate_recommendations(
     student_id: int,
     recommendation_input: RecommendationInput,
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
 ):
     """
     Generate university program recommendations for a student based on Tunisian orientation system
@@ -67,7 +69,8 @@ async def generate_recommendations(
 @router.get("/student/{student_id}")
 async def list_recommendations_for_student(
     student_id: int,
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
 ):
     """
     Get all recommendations for a student (from database)
@@ -101,7 +104,8 @@ async def list_recommendations_for_student(
 async def get_recommendation_by_student_and_id(
     student_id: int,
     rec_id: int,
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
 ):
     """
     Get a single recommendation by student ID and recommendation ID

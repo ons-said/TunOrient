@@ -1,5 +1,5 @@
 import { useLocation, Link, Navigate } from 'react-router-dom';
-import { ArrowLeft, Award, TrendingUp, AlertCircle } from 'lucide-react';
+import { ArrowLeft, Award, TrendingUp } from 'lucide-react';
 import type { Recommendation } from '../../../api/recommendations';
 
 const RecommendationResults = () => {
