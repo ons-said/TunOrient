@@ -111,7 +111,15 @@ Below is a detailed list of all available API endpoints organized by feature.
     The application will be available at `http://localhost:5173`.
 
 ## Key Features
--   **FG Algorithm**: Exact implementation of the Ministry of Higher Education's formula for all Baccalaureate sections.
--   **Tanfil Bonus**: Integration of the +7% bonus for geographic proximity.
--   **Secure**: JWT-based authentication and role-based access control.
--   **Responsive**: Modern, mobile-friendly interface.
+
+### 🎓 For Students
+-   **Personalized Guidance**: Receive tailored program recommendations that match your academic profile and career aspirations.
+-   **Accurate Score Simulation**: Instantly calculate your admission scores for any program using up-to-date official formulas.
+-   **Opportunity Exploration**: Browse the complete catalog of university programs, including those offering reorientation.
+-   **Stay Informed**: Access the latest official circulars and updates directly from the ministry.
+
+### 🏛️ For Ministry & Administration
+-   **Centralized Management**: Efficiently oversee university programs, institutions, and admission capacities.
+-   **Data-Driven Insights**: Access comprehensive data on student performance and orientation trends.
+-   **Secure & Scalable**: Built on a modern, secure architecture with role-based access control (RBAC) to protect sensitive data.
+-   **Streamlined Processes**: Simplify the management of orientation cycles and circular publications.

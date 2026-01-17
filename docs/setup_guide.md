@@ -3,6 +3,8 @@
 ## Project Overview
 TunOrient is a FastAPI-based application for managing educational programs, institutions, and student recommendations. It features a modern backend API and a React frontend for administration and student interaction.
 
+> **Note:** TunOrient is an informational and advisory platform. It does not manage official orientation workflows or enforce ministry rules.
+
 ---
 
 ## Prerequisites
@@ -50,7 +52,10 @@ TunOrient is a FastAPI-based application for managing educational programs, inst
    alembic upgrade head
    ```
 
-6. **Start the FastAPI backend:**
+6. **Bulk import programs (optional):**
+   - Use the `/programs/bulk` endpoint to import programs from the official Tunisian guide (JSON format, in French).
+
+7. **Start the FastAPI backend:**
    ```bash
    uvicorn app.main:app --reload
    ```
@@ -93,6 +98,50 @@ TunOrient is a FastAPI-based application for managing educational programs, inst
 
 ---
 
+## API Endpoints
+
+- `/auth` — Authentication
+- `/students` — Student profiles and interests
+- `/universities` — University data
+- `/programs` — Programs and admission rules
+- `/circulars` — Official circulars and documents
+
+---
+
+## Recommendation Engine
+
+- Recommendations are generated using the official Tunisian scoring formulas and program admission rules.
+- The engine uses student grades, bac section, governorate, and interests to suggest suitable programs.
+- Recommendations are advisory only and do not submit official choices.
+
+---
+
+## Role-Based Access Control (RBAC)
+
+- **Students:** Manage profile, view recommendations.
+- **Ministry/Admin:** Manage universities, programs, circulars.
+- **Universities:** Data entities only (no user accounts).
+
+---
+
+## Frontend Features
+
+- Homepage: Search, featured programs/universities, latest circulars.
+- Universities Page: Search/filter, university details.
+- Programs Page: Search/filter, program details with admission rules.
+- Circulars Page: Tabbed view, downloadable PDFs.
+- Authentication: Login, register, forgot password.
+- Student Dashboard: Questionnaire, generate recommendations, view results.
+
+---
+
+## Testing
+
+- Test the recommendation endpoint by creating a student profile with grades, bac section, and governorate.
+- Use the `/api/v1/recommendations/{student_id}` endpoint to view personalized program suggestions.
+
+---
+
 ## Using GitHub Copilot
 
 - **GitHub Copilot** is integrated with VS Code and can assist you by:
@@ -106,4 +155,4 @@ TunOrient is a FastAPI-based application for managing educational programs, inst
 
 ---
 
-**You are now ready to develop and run TunOrient!**
+**TunOrient is now ready for use as an informational and advisory platform!**

@@ -21749,9 +21749,54 @@ Response: Here’s exactly what you should do to fix the mismatch and make your 
 
 Prompt: I want to commit and push my current work
 Response: Here are the steps to commit and push your current work to GitHub from your VS Code terminal: (listed git add, commit, push).
+# Tunisian University Orientation System — Implementation Log
 
-Prompt: can you add our discussin today to history.log
-Response: (Provided a summary log.)
+## 2026-01-05 — System Alignment with Tunisian Guide
 
-Prompt: no very ditailed mention the prompt ans you response to it 
-Response: (This log!)
+### 1. Questionnaire Update (Collect Subject Grades)
+- The student profile and questionnaire must collect:
+  - Bac section (in French: Lettres, Mathématiques, Sciences Expérimentales, Économiques et Gestion, Techniques, Informatique, Sport)
+  - Grades for all relevant subjects (MG, A, Ang, F, M, SP, SVT, PH, HG, Ec, Ge, TE, Algo, STI, EP, p-sport, ESP, IT, ALL, Info)
+  - Governorate (for geographic bonus)
+- Update frontend and backend schemas to include:
+  - `bac_type` (French string)
+  - `bac_grades` (JSON/dict of subject: grade)
+  - `governorate` (French string)
+
+### 2. Database Population (Programs from Guide)
+- Programs must be bulk imported using the French translation and mapped to existing institutions.
+- Use the provided JSON structure for `/programs/bulk`:
+  - Fields: name, degree, field, capacity, institution_id, reorientation_allowed, reorientation_mode, bac_section, min_average, score_formula, required_subjects, additional_conditions, academic_year, last_admitted_score, notes
+  - All fields and values in French, matching the guide and your institution IDs.
+
+### 3. Recommendation Engine (Tunisian Scoring System)
+- FG calculation uses the official Tunisian formulas for each bac section (see guide page 11).
+- For each program:
+  - Check if student’s bac_type matches program’s bac_section (French, comma-separated).
+  - Check min_average and required_subjects.
+  - Calculate FG, then evaluate program’s score_formula (replace FG and subject codes with student’s grades).
+  - Apply 7% geographic bonus if governorate matches university region.
+  - Compare total points (with bonus) to last_admitted_score.
+  - Indicate if program requires selection test (reorientation_mode == "exam").
+- Return sorted recommendations (top 6+), categorized as safe/realistic/reach.
+
+### 4. Minimal File Changes Required
+- **models.py**: Add `bac_type`, `governorate`, `bac_grades` to Student.
+- **schemas.py**: Add fields to StudentCreate/Update, create RecommendationInput schema.
+- **services/recommendation_service.py**: Implement FG and total points calculation, filtering, and sorting.
+- **routes/recommendations.py**: Update POST endpoint to use new logic and schemas.
+- **templates/student_questionnaire.html**: Add HTML form for student input and grades.
+
+### 5. Testing Steps
+- Import programs via `/programs/bulk` (Insomnia, JSON in French).
+- Update student profile with bac_type, governorate, bac_grades.
+- POST to `/api/v1/recommendations/{student_id}` with RecommendationInput.
+- View recommendations (FG, total points, bonus, cutoff, selection test flag).
+
+### 6. Key Implementation Notes
+- All logic and data must match the Tunisian guide (not French bac).
+- All endpoints, models, and fields in French.
+- Geographic bonus uses university region.
+- Only modify the files listed above for deadline.
+- Use provided JSON and mapping for institutions and programs.
+
